@@ -1,9 +1,14 @@
+// Import dotenv
+require('dotenv').config();
+
 const {  SlashCommandBuilder } = require('discord.js');
 const { google } = require('googleapis');
 const path = require('path');
 
+const { SPREADSHEET_ID } = process.env;
+
 const credential = path.join(__dirname, '../../credential.json');
-var totalPriceThisMonth = 0
+let totalPriceThisMonth = 0
 
 // Google Sheet Insert
 async function appendToSheet(productName, price) {
@@ -13,12 +18,11 @@ async function appendToSheet(productName, price) {
   });
   const sheets = google.sheets({ version: 'v4', auth });
 
-  const Day = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Mingyu'];
+  const Day = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Mingu'];
   const Month = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des'];
 
-  const spreadsheetId = '1PHgWiix8f-RXb1A1dSPVKiogEuZ9YPREuE-mBWrSBLQ';
   const fullSheetData = await sheets.spreadsheets.get({
-    spreadsheetId
+    SPREADSHEET_ID
   });
     
   const targetSheet = Month[new Date().getMonth()]+"-"+new Date().getFullYear();
@@ -196,6 +200,6 @@ module.exports = {
         await appendToSheet(productName, price);
         await interaction.editReply(`Added to Google Sheet: "${productName}" with price Rp.${price}.... 
 This Month You Already Spent : ${totalPriceThisMonth}!
-Be Carefull With Your Money!`);
+Jangan boros mas!`);
     }
 };
