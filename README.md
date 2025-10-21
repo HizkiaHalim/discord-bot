@@ -43,7 +43,7 @@ usermod -aG docker [your username here]
 ```
 
 ## Loading Docker Image
-So i've build a docker image (discord-bot-hiz.tar) and all you need to do is just load the docker image > docker run > voila the bot successfully started.
+So i've build a docker image (discord-bot-hiz.tar) but it's size is to big for github :( But all you need to do is just build the docker image > docker run > voila the bot successfully started.
 But before you do this please and .env and credential.json to your discord-bot folder (put it in the same folder as the docker image)!
 ```
 # Docker load and run
