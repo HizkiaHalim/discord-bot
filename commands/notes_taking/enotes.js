@@ -32,7 +32,7 @@ async function appendToSheet(productName, price) {
   if (!currentSheet.includes(targetSheet.toString())) {
     console.log('Creating New Sheet');
 
-    addSheetResponse = await sheets.spreadsheets.batchUpdate({
+    let addSheetResponse = await sheets.spreadsheets.batchUpdate({
         spreadsheetId,
         requestBody: {
             requests: [

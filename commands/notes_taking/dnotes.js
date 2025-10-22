@@ -3,7 +3,7 @@ require('dotenv').config();
 
 const {  SlashCommandBuilder } = require('discord.js');
 const { google } = require('googleapis');
-const path = require('path');
+const path = require('node:path');
 
 const credential = path.join(__dirname, '../../credential.json');
 let totalPriceThisMonth = 0
