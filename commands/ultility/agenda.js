@@ -12,7 +12,7 @@ async function getAgenda(date, interaction){
 
     const calendar = google.calendar({ version: 'v3', auth });
 
-    const [day, month, year] = date.split("-");
+    let [day, month, year] = date ? date.split("-") : [];
 
     const inputDate = date ? new Date(`${year}-${month}-${day}`) : new Date();
 
@@ -62,11 +62,13 @@ module.exports = {
     async execute (interaction) {
         const date = interaction.options.getString('date');
 
-        const dateRegex = /^\d{2}-\d{2}-\d{4}$/;
-
-        if (!dateRegex.test(date)) {
-            await interaction.editReply('Invalid date format! Please use dd-mm-yyyy (e.g. 25-10-2022)! Can\'t you read?');
-            return;
+        if (date){
+            const dateRegex = /^\d{2}-\d{2}-\d{4}$/;
+    
+            if (!dateRegex.test(date)) {
+                await interaction.reply('Invalid date format! Please use dd-mm-yyyy (e.g. 25-10-2022)! Can\'t you read?');
+                return;
+            }
         }
 
         await getAgenda(date, interaction);
