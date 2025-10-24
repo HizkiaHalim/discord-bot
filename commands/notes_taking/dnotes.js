@@ -8,7 +8,7 @@ const path = require('node:path');
 const credential = path.join(__dirname, '../../credential.json');
 let totalPriceThisMonth = 0
 
-const { DOCS_ID } = process.env;
+const { DOCS_ID, WORK_DOCS_ID } = process.env;
 
 // Google Docs Insert
 async function appendToDocs(topic, notes) {
@@ -21,11 +21,59 @@ async function appendToDocs(topic, notes) {
   const Day = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Mingu'];
   const Month = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des'];
 
-  const fullDocs = await docs.documents.get({
-    documentId : DOCS_ID
+  let fullDocs;
+
+  fullDocs = await docs.documents.get({
+    documentId : topic == 'Work' ? WORK_DOCS_ID : DOCS_ID,
+    includeTabsContent : true
   });
 
-  console.log(fullDocs);
+  // Search for target tab
+  const targetTab = fullDocs.data.tabs.find(t => t.tabProperties.title === topic);
+  const tabId = targetTab.tabProperties.tabId;
+
+  // Search for last index
+  const content = targetTab.documentTab.body.content;
+  const lastElement = content[content.length - 1];
+  const endIndex = lastElement.endIndex - 1;
+
+  console.log("Document Connected");
+
+  // Today's date
+  const currentDate = Day[new Date().getDay() - 1] + ", " + new Date().getDate() + "-" + Month[new Date().getMonth()] + "-" + new Date().getFullYear();
+  
+  // New line + date
+  const notesText = `\n${notes} (${currentDate})`
+
+
+  await docs.documents.batchUpdate({
+    documentId: topic == 'Work' ? WORK_DOCS_ID : DOCS_ID,
+    requestBody: {
+            requests: [
+            {
+                insertText: {
+                    location: { 
+                        tabId: tabId,
+                        index: endIndex
+                    },
+                    text: notesText,
+                }
+            },
+            {
+                createParagraphBullets: {
+                    range: {
+                        tabId: tabId,
+                        "startIndex": endIndex,
+                        "endIndex": endIndex + notesText.length
+                    },
+                    bulletPreset: "BULLET_CHECKBOX"
+                }
+            }
+            ],
+    },
+  });
+
+  console.log("Writing complete!");
 }
 
 module.exports = {
