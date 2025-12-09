@@ -5,7 +5,7 @@ const {  SlashCommandBuilder } = require('discord.js');
 const { google } = require('googleapis');
 const path = require('path');
 
-const { SPREADSHEET_ID } = process.env;
+const { SPREADSHEET_ID : spreadsheetId } = process.env;
 
 const credential = path.join(__dirname, '../../credential.json');
 let totalPriceThisMonth = 0
@@ -22,7 +22,7 @@ async function appendToSheet(productName, price) {
   const Month = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des'];
 
   const fullSheetData = await sheets.spreadsheets.get({
-    SPREADSHEET_ID
+    spreadsheetId
   });
     
   const targetSheet = Month[new Date().getMonth()]+"-"+new Date().getFullYear();
